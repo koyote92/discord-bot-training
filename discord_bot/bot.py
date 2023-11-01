@@ -1,7 +1,7 @@
 import os
 
 import discord
-import responses
+from discord_bot import responses
 from dotenv import load_dotenv
 
 

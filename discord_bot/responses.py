@@ -30,12 +30,12 @@ def handle_response(client, message, server_id) -> str:
             roll_call += separator
             roll_call += '\nБойцы играют в:\n\n'
             players_count_by_game = dict()
-            for k, v in playing_members.items():
-                roll_call += f'{k}: {v}"\n'
+            for k, v in sorted(playing_members.items()):
+                roll_call += f'{k}: {v}\n'
                 players_count_by_game[v] = players_count_by_game.get(v, 0) + 1
             roll_call += separator
             roll_call += '\nКоличество игроков в играх:\n\n'
-            for k, v in players_count_by_game.items():
+            for k, v in sorted(players_count_by_game.items()):
                 roll_call += f'{k}: {v}\n'
             roll_call += separator
             roll_call += '\nПерекличка окончена, старшой!'
