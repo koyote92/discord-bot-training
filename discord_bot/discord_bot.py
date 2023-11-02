@@ -23,7 +23,7 @@ async def send_message(client, message, user_message, is_private):
         print(e)
 
 
-def run_discord_bot():
+def run():
     client = discord.Client(intents=discord.Intents.all())
 
     @client.event
@@ -49,7 +49,7 @@ def run_discord_bot():
         # print(guild_id, guild_name)
 
         if message.channel.id == SYS_CHA:
-            print('Это важное сообщение')
+            print('Это важное сообщение!')
 
         if user_message.startswith('!'):
             user_message = user_message[1:]
