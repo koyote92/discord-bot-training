@@ -7,9 +7,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BOT_TOKEN = os.getenv('BOT_TOKEN')
-SERVER_ID = int(os.getenv('MY_SERVER_ID'))
-SYS_CHA = int(os.getenv('SYS_CHANNEL'))
+BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+SERVER_ID = int(os.getenv('DISCORD_SERVER_ID'))
+SYS_CHA = int(os.getenv('DISCORD_SYS_CHANNEL'))
 
 
 async def send_message(client, message, user_message, is_private):
