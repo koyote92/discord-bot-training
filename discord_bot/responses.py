@@ -42,6 +42,3 @@ def handle_response(client, message, server_id) -> str:
             return roll_call
 
         return 'Никакой активности, старшой.'
-
-    else:
-        pass
