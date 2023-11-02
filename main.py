@@ -1,3 +1,4 @@
+import asyncio
 import os
 from sys import exit
 
@@ -44,4 +45,7 @@ def check_dotenv_variables():
 
 if __name__ == '__main__':
     check_dotenv_variables()
-    discord_bot.run()
+    loop = asyncio.get_event_loop()
+    loop.create_task(discord_bot.run())
+    loop.create_task(telegram_bot.run())
+    loop.run_forever()
