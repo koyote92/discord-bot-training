@@ -3,7 +3,8 @@ import os
 import discord
 from dotenv import load_dotenv
 
-from . import responses
+from service import texts
+from .responses import handle_response  # какая-то проблема с импортом
 
 
 load_dotenv()
@@ -17,11 +18,13 @@ bot = discord.Client(intents=discord.Intents.all())
 
 @bot.event
 async def on_ready():
-    print(f'{bot.user} на боевом дежурстве!')
+    """ Сообщает о рабочей готовности дискорд-бота. """
+    print(f'{bot.user} на боевом дежурстве в Discord!')
 
 
 @bot.event
 async def on_message(message):
+    """ Реакция на событие - новое сообщение в дискорде. """
     if message.author == bot.user:
         return
 
@@ -41,17 +44,20 @@ async def on_message(message):
         user_message = user_message[1:]
         await send_message(bot, message, user_message, is_private=True)
         await message.delete()
+    elif user_message in texts.greetings:
+        await send_message(bot, message, user_message, is_private=False)
 
 
 async def send_message(client, message, user_message, is_private):
+    """ Обрабатывает сообщение в зависимости от символа перед сообщением. """
     try:
-        response = responses.handle_response(
+        response = handle_response(
             client,
             user_message,
             SERVER_ID,
         )
-        await (message.author.send(response) if is_private
-               else await message.channel.send(response))
+        (await message.author.send(response) if is_private
+         else await message.channel.send(response))
     except TypeError:
         pass
     except Exception as e:

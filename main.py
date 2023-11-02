@@ -23,6 +23,8 @@ TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 
 
 def check_dotenv_variables():
+    """ Проверяет наличие необходимых переменных окружения. """
+
     dotenv_variables_names = [
         'DISCORD_APPLICATION_ID',
         'DISCORD_PUBLIC_KEY',
@@ -44,8 +46,12 @@ def check_dotenv_variables():
 
 
 if __name__ == '__main__':
-    check_dotenv_variables()
-    loop = asyncio.get_event_loop()
-    loop.create_task(discord_bot.run())
-    loop.create_task(telegram_bot.run())
-    loop.run_forever()
+    try:
+        check_dotenv_variables()
+        loop = asyncio.get_event_loop()
+        loop.create_task(discord_bot.run())
+        loop.create_task(telegram_bot.run())
+        loop.run_forever()
+    except KeyboardInterrupt:
+        telegram_bot.stop()
+        print('Бот остановлен.')

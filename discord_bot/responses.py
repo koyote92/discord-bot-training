@@ -1,9 +1,12 @@
 import random
 
+import discord
+
 from service import texts
 
 
 def handle_response(client, message, server_id) -> str:
+    """ Обработка сообщения в зависимости от его содержимого. """
     p_message = message.lower()
 
     if p_message in texts.greetings:
@@ -21,12 +24,13 @@ def handle_response(client, message, server_id) -> str:
         playing_members = dict()
 
         for member in guild.members:
-            if member.activity:
+            if (member.activity
+                    and member.activity.type == discord.ActivityType.playing):
                 playing_members[member.name] = member.activity.name
 
         if playing_members:
             separator = '-' * 50
-            roll_call = 'Начинаю перекличку!\n'
+            roll_call = 'Так точно, начинаю перекличку!\n'
             roll_call += separator
             roll_call += '\nБойцы играют в:\n\n'
             players_count_by_game = dict()
@@ -38,7 +42,7 @@ def handle_response(client, message, server_id) -> str:
             for k, v in sorted(players_count_by_game.items()):
                 roll_call += f'{k}: {v}\n'
             roll_call += separator
-            roll_call += '\nПерекличка окончена, старшой!'
+            roll_call += '\nПерекличка окончена!'
             return roll_call
 
-        return 'Никакой активности, старшой.'
+        return 'Никакой активности личного состава, товарищ командир.'
