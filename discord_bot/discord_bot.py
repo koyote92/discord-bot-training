@@ -65,4 +65,5 @@ async def send_message(client, message, user_message, is_private):
 
 
 async def run():
+    """ Запускает дискорд-бота. """
     await bot.start(BOT_TOKEN)
