@@ -32,9 +32,9 @@ def build_message(message):
             '**Содержание сообщения:**\n'
             f'{message.content}')
     if message.attachments:
-        text += f'\n{"-" * 50}\n*Ниже прикреплены вложения. Доклад окончен!*\n'
+        text += f'\n{"-" * 50}\n*Ниже прикреплены вложения. Доклад окончен!*'
     else:
-        text += '*Доклад окончен!*'
+        text += f'\n{"-" * 50}\n*Доклад окончен!*'
     return text
 
 
@@ -56,10 +56,7 @@ def build_attachments(message):
 async def remove_files(message):
     for attc in message.attachments:
         print(f'Удаляем {attc.filename} ...')
-        try:
-            os.unlink(MEDIA_PATH + attc.filename)
-        except Exception as e:
-            print(e)
+        os.unlink(MEDIA_PATH + attc.filename)
         print(f'Файл {MEDIA_PATH + attc.filename} удалён.')
         await asyncio.sleep(1)
 
