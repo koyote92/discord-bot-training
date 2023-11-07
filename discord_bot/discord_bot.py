@@ -62,11 +62,12 @@ async def download_attachments(message: discord.Message) -> None:
         await asyncio.sleep(3)
 
 
-def build_attachments(message: discord.Message) -> list[discord.File]:
+async def build_attachments(message: discord.Message) -> list[discord.File]:
     """ Собираем файлы для отправки в ЛС. """
     attcs_as_files = [
         discord.File(MEDIA_PATH + attc.filename, filename=attc.filename) for
         attc in message.attachments]
+    await asyncio.sleep(0.5)
     print('Вложения прикреплены к текстовому сообщению.')
     return attcs_as_files
 
@@ -90,13 +91,14 @@ async def on_message(message: discord.Message, attcs=None) -> None:
     if message.channel.id != ANNO_CHA:
         return
 
-    print(f'Новое сообщение в #{message.channel.name} от {message.author.name}')
+    print(f'Новое сообщение в #{message.channel.name} '
+          f'от {message.author.name}')
     message_text = build_message(message)
 
     if message.attachments:
         print(f'Сообщение содержит вложения: {len(message.attachments)}')
         await download_attachments(message)
-        attcs = build_attachments(message)
+        attcs = await build_attachments(message)
 
     guild = bot.get_guild(SERVER_ID)
     for member in guild.members:
