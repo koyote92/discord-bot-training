@@ -55,9 +55,14 @@ def build_attachments(message):
 
 
 def remove_files(message):
+    print(len(message.attachments))
+    print(message.attachments)
     for attc in message.attachments:
         print(f'Удаляем {attc.filename} ...')
-        os.unlink(MEDIA_PATH + attc.filename)
+        try:
+            os.unlink(MEDIA_PATH + attc.filename)
+        except Exception as e:
+            print(e)
         print(f'Файл {MEDIA_PATH + attc.filename} удалён.')
 
 
