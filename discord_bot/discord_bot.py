@@ -30,8 +30,11 @@ def build_message(message):
             f'**Канал:** {message.channel}\n'
             f'**Ссылка на сообщение:**  {message.jump_url}\n\n'
             '**Содержание сообщения:**\n'
-            f'{message.content}'
-            f'\n{"-" * 50}\n*Ниже прикреплены вложения. Доклад окончен!*\n')
+            f'{message.content}')
+    if message.attachments:
+        text += f'\n{"-" * 50}\n*Ниже прикреплены вложения. Доклад окончен!*\n'
+    else:
+        text += '*Доклад окончен!*'
     return text
 
 
