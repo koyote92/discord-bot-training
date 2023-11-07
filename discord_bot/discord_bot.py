@@ -40,6 +40,7 @@ def build_message(message):
 
 async def download_attachments(message):
     for attachment in message.attachments:
+        print(f'Скачиваем {attachment.filename}')
         await attachment.save(attachment.filename)
         await asyncio.sleep(3)
 
@@ -48,17 +49,18 @@ def build_attachments(message):
     attcs_as_files = [
         discord.File(MEDIA_PATH + attc.filename, filename=attc.filename) for
         attc in message.attachments]
+    print('Файлы готовы к отправке в Discord.')
     return attcs_as_files
 
 
 async def remove_files(message):
     for attc in message.attachments:
-        print(f'Removing {MEDIA_PATH + attc.filename}')
+        print(f'Удаляем {attc.filename} ...')
         try:
             os.unlink(MEDIA_PATH + attc.filename)
         except Exception as e:
             print(e)
-        print(f'{MEDIA_PATH + attc.filename} removed')
+        print(f'Файл {MEDIA_PATH + attc.filename} удалён.')
         await asyncio.sleep(1)
 
 
@@ -67,9 +69,11 @@ async def on_message(message):
     """ Реакция на событие - новое сообщение в дискорде. """
     attcs = False
     if message.channel.id == ANNO_CHA:
+        print('Найдено новое сообщение. Обрабатываем...')
         message_text = build_message(message)
 
         if message.attachments:
+            print('К сообщению прикреплены вложения.')
             await download_attachments(message)
             attcs = build_attachments(message)
 
@@ -77,7 +81,7 @@ async def on_message(message):
         for member in guild.members:
             member_roles_ids = [role.id for role in member.roles]
             if NF_ROLE_ID in member_roles_ids:
-                print('Юзер найден')
+                print(f'Отправляем сообщение {member.name}')
                 await asyncio.sleep(3)
                 await (member.send(message_text, files=attcs) if attcs
                        else member.send(message_text))
