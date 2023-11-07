@@ -102,7 +102,7 @@ async def on_message(message: discord.Message, attcs=None) -> None:
     for member in guild.members:
         member_roles_ids = [role.id for role in member.roles]
         if ROLE_ID in member_roles_ids:
-            print(f'{ROLE_ID}: {member_roles_id}')
+            print(f'{ROLE_ID}: {member_roles_ids}')
             await asyncio.sleep(3)
             await (
                 member.send(message_text, files=attcs) if attcs
