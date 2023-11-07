@@ -99,7 +99,7 @@ async def on_message(message: discord.Message, attcs=None) -> None:
         attcs = build_attachments(message)
 
     guild = bot.get_guild(SERVER_ID)
-    await for member in guild.members:
+    for member in guild.members:
         member_roles_ids = [role.id for role in member.roles]
         if ROLE_ID in member_roles_ids:
             print(f'{ROLE_ID}: {member_roles_ids}')
