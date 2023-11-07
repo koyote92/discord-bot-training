@@ -42,8 +42,8 @@ def build_message(message: discord.Message) -> str:
     dummy_str = 'Сообщение не содержит текста.'
     text = (f'*Докладываю о новом оповещении от командования!*\n{"-" * 50}\n'
             f'**Сервер:** {message.guild}\n'
-            f'**Автор сообщения:**  {message.author}\n'
             f'**Канал:** {message.channel}\n'
+            f'**Автор сообщения:**  {message.author}\n'
             f'**Ссылка на сообщение:**  {message.jump_url}\n\n'
             '**Содержание сообщения:**\n'
             f'{message.content if message.content else dummy_str}')
