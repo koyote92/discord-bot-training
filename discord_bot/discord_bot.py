@@ -53,12 +53,14 @@ def build_attachments(message):
     return attcs_as_files
 
 
-async def remove_files(message):
+def remove_files(message):
     for attc in message.attachments:
         print(f'Удаляем {attc.filename} ...')
-        os.unlink(MEDIA_PATH + attc.filename)
-        print(f'Файл {MEDIA_PATH + attc.filename} удалён.')
-        await asyncio.sleep(1)
+        try:
+            os.unlink(MEDIA_PATH + attc.filename)
+            print(f'Файл {MEDIA_PATH + attc.filename} удалён.')
+        except Exception as e:
+            print(e)
 
 
 @bot.event
@@ -83,7 +85,7 @@ async def on_message(message):
                 await (member.send(message_text, files=attcs) if attcs
                        else member.send(message_text))
 
-    await remove_files(message)
+    remove_files(message)
 
 
 async def run():
