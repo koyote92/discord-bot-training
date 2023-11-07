@@ -60,8 +60,8 @@ def build_attachments(message: discord.Message) -> list[discord.File]:
 def remove_files(message: discord.Message) -> None:
     """ Удаляем загруженные медиа-файлы. """
     for attc in message.attachments:
-        print(f'Удаляем {attc.filename} ...')
         try:
+            print(f'Удаляем {attc.filename} ...')
             os.unlink(MEDIA_PATH + attc.filename)
             print(f'Файл {MEDIA_PATH + attc.filename} удалён.')
         except:
