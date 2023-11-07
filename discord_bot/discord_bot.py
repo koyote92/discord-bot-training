@@ -111,7 +111,7 @@ async def on_message(message: discord.Message, attcs=None) -> None:
                     member.send(message_text, files=attcs) if attcs
                     else member.send(message_text)
                 )
-            except Except as e:
+            except Exception as e:
                 print(e)
             print(f'Сообщение отправлено для {member.name}')
     remove_files(message)
