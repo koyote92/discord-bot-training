@@ -90,7 +90,7 @@ async def on_message(message: discord.Message, attcs=None) -> None:
     if message.channel.id != ANNO_CHA:
         return
 
-    print(f'Новое сообщение в {message.channel.name} от {message.author.name}')
+    print(f'Новое сообщение в #{message.channel.name} от {message.author.name}')
     message_text = build_message(message)
 
     if message.attachments:
