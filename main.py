@@ -5,7 +5,6 @@ from sys import exit
 from dotenv import load_dotenv
 
 from discord_bot import discord_bot
-from telegram_bot import telegram_bot
 
 
 load_dotenv()
@@ -17,9 +16,6 @@ DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 DISCORD_LINK = os.getenv('DISCORD_LINK')
 DISCORD_SERVER_ID = os.getenv('DISCORD_SERVER_ID')
 DISCORD_SYS_CHANNEL = os.getenv('DISCORD_SYS_CHANNEL')
-TELEGRAM_API_ID = os.getenv('TELEGRAM_API_ID')
-TELEGRAM_API_HASH = os.getenv('TELEGRAM_API_HASH')
-TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 
 
 def check_dotenv_variables():
@@ -50,8 +46,6 @@ if __name__ == '__main__':
         check_dotenv_variables()
         loop = asyncio.get_event_loop()
         loop.create_task(discord_bot.run())
-        loop.create_task(telegram_bot.run())
         loop.run_forever()
     except KeyboardInterrupt:
-        telegram_bot.stop()
         print('Бот остановлен.')
