@@ -18,12 +18,13 @@ bot = discord.Client(intents=intents)
 
 
 @bot.event
-async def on_ready():
+async def on_ready() -> None:
     """ Сообщает о рабочей готовности дискорд-бота. """
     print(f'{bot.user} на боевом дежурстве в Discord!')
 
 
-def build_message(message):
+def build_message(message: discord.Message) -> str:
+    """ Строим текст сообщения. """
     text = (f'*Докладываю о новом оповещении от командования!*\n{"-" * 50}\n'
             f'**Сервер:** {message.guild}\n'
             f'**Автор сообщения:**  {message.author}\n'
@@ -38,7 +39,8 @@ def build_message(message):
     return text
 
 
-async def download_attachments(message):
+async def download_attachments(message: discord.Message) -> None:
+    """Скачиваем прикреплённые файлы из сообщения. """
     for attachment in message.attachments:
         print(f'Скачиваем {attachment.filename} ...')
         await attachment.save(attachment.filename)
@@ -46,7 +48,8 @@ async def download_attachments(message):
         await asyncio.sleep(3)
 
 
-def build_attachments(message):
+def build_attachments(message: discord.Message) -> list[discord.File]:
+    """ Собираем файлы для отправки в ЛС. """
     attcs_as_files = [
         discord.File(MEDIA_PATH + attc.filename, filename=attc.filename) for
         attc in message.attachments]
@@ -54,22 +57,17 @@ def build_attachments(message):
     return attcs_as_files
 
 
-def remove_files(message):
-    print(len(message.attachments))
-    print(message.attachments)
+def remove_files(message: discord.Message) -> None:
+    """ Удаляем загруженные медиа-файлы. """
     for attc in message.attachments:
         print(f'Удаляем {attc.filename} ...')
-        try:
-            os.unlink(MEDIA_PATH + attc.filename)
-        except Exception as e:
-            print(e)
+        os.unlink(MEDIA_PATH + attc.filename)
         print(f'Файл {MEDIA_PATH + attc.filename} удалён.')
 
 
 @bot.event
-async def on_message(message):
+async def on_message(message: discord.Message, attcs=None) -> None:
     """ Реакция на событие - новое сообщение в дискорде. """
-    attcs = False
     if message.channel.id == ANNO_CHA:
         print('Найдено новое сообщение. Обрабатываем...')
         message_text = build_message(message)
@@ -91,6 +89,6 @@ async def on_message(message):
     remove_files(message)
 
 
-async def run():
+async def run() -> None:
     """ Запускает дискорд-бота. """
     await bot.start(BOT_TOKEN)
