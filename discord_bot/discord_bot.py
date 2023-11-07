@@ -40,8 +40,9 @@ def build_message(message):
 
 async def download_attachments(message):
     for attachment in message.attachments:
-        print(f'Скачиваем {attachment.filename}')
+        print(f'Скачиваем {attachment.filename} ...')
         await attachment.save(attachment.filename)
+        print(f'{attachment.file} скачан.'
         await asyncio.sleep(3)
 
 
@@ -49,18 +50,15 @@ def build_attachments(message):
     attcs_as_files = [
         discord.File(MEDIA_PATH + attc.filename, filename=attc.filename) for
         attc in message.attachments]
-    print('Файлы готовы к отправке в Discord.')
+    print('Файлы готовы к отправке.')
     return attcs_as_files
 
 
 def remove_files(message):
     for attc in message.attachments:
         print(f'Удаляем {attc.filename} ...')
-        try:
-            os.unlink(MEDIA_PATH + attc.filename)
-            print(f'Файл {MEDIA_PATH + attc.filename} удалён.')
-        except Exception as e:
-            print(e)
+        os.unlink(MEDIA_PATH + attc.filename)
+        print(f'Файл {MEDIA_PATH + attc.filename} удалён.')
 
 
 @bot.event
@@ -85,7 +83,7 @@ async def on_message(message):
                 await (member.send(message_text, files=attcs) if attcs
                        else member.send(message_text))
 
-    # remove_files(message)
+    remove_files(message)
 
 
 async def run():
