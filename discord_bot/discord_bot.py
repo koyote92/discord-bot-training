@@ -1,19 +1,20 @@
+import asyncio
 import os
 
 import discord
 from dotenv import load_dotenv
 
-from service import texts
-from .responses import handle_response  # какая-то проблема с импортом
-
 
 load_dotenv()
 
-BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+BOT_TOKEN = str(os.getenv('DISCORD_BOT_TOKEN'))
 SERVER_ID = int(os.getenv('DISCORD_SERVER_ID'))
-SYS_CHA = int(os.getenv('DISCORD_SYS_CHANNEL'))
+ANNO_CHA = int(os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL_ID'))
+NF_ROLE_ID = int(os.getenv('DISCORD_NF_ROLE_ID'))
+MEDIA_PATH = str(os.getenv('MEDIA_PATH'))
 
-bot = discord.Client(intents=discord.Intents.all())
+intents = discord.Intents.all()
+bot = discord.Client(intents=intents)
 
 
 @bot.event
@@ -22,46 +23,63 @@ async def on_ready():
     print(f'{bot.user} на боевом дежурстве в Discord!')
 
 
+def build_message(message):
+    text = (f'*Докладываю о новом оповещении от командования!*\n{"-" * 50}\n'
+            f'**Сервер:** {message.guild}\n'
+            f'**Автор сообщения:**  {message.author}\n'
+            f'**Канал:** {message.channel}\n'
+            f'**Ссылка на сообщение:**  {message.jump_url}\n\n'
+            '**Содержание сообщения:**\n'
+            f'{message.content}'
+            f'\n{"-" * 50}\n*Ниже прикреплены вложения. Доклад окончен!*\n')
+    return text
+
+
+async def download_attachments(message):
+    for attachment in message.attachments:
+        await attachment.save(attachment.filename)
+        await asyncio.sleep(3)
+
+
+def build_attachments(message):
+    attcs_as_files = [
+        discord.File(MEDIA_PATH + attc.filename, filename=attc.filename) for
+        attc in message.attachments]
+    return attcs_as_files
+
+
+async def remove_files(message):
+    for attc in message.attachments:
+        print(f'Removing {MEDIA_PATH + attc.filename}')
+        try:
+            os.unlink(MEDIA_PATH + attc.filename)
+        except Exception as e:
+            print(e)
+        print(f'{MEDIA_PATH + attc.filename} removed')
+        await asyncio.sleep(1)
+
+
 @bot.event
 async def on_message(message):
     """ Реакция на событие - новое сообщение в дискорде. """
-    if message.author == bot.user:
-        return
+    attcs = False
+    if message.channel.id == ANNO_CHA:
+        message_text = build_message(message)
 
-    username = str(message.author)
-    user_message = str(message.content)
-    channel = str(message.channel)
+        if message.attachments:
+            await download_attachments(message)
+            attcs = build_attachments(message)
 
-    print(f'{username} сказал: "{user_message}" ({channel})')
+        guild = bot.get_guild(SERVER_ID)
+        for member in guild.members:
+            member_roles_ids = [role.id for role in member.roles]
+            if NF_ROLE_ID in member_roles_ids:
+                print('Юзер найден')
+                await asyncio.sleep(3)
+                await (member.send(message_text, files=attcs) if attcs
+                       else member.send(message_text))
 
-    if message.channel.id == SYS_CHA:
-        print('Это важное сообщение!')
-
-    if user_message.startswith('!'):
-        user_message = user_message[1:]
-        await send_message(bot, message, user_message, is_private=False)
-    elif user_message.startswith('?'):
-        user_message = user_message[1:]
-        await send_message(bot, message, user_message, is_private=True)
-        await message.delete()
-    elif user_message in texts.greetings:
-        await send_message(bot, message, user_message, is_private=False)
-
-
-async def send_message(client, message, user_message, is_private):
-    """ Обрабатывает сообщение в зависимости от символа перед сообщением. """
-    try:
-        response = handle_response(
-            client,
-            user_message,
-            SERVER_ID,
-        )
-        (await message.author.send(response) if is_private
-         else await message.channel.send(response))
-    except TypeError:
-        pass
-    except Exception as e:
-        print(e)
+    await remove_files(message)
 
 
 async def run():
