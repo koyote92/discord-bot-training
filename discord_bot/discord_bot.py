@@ -66,17 +66,16 @@ def build_attachments(message: discord.Message) -> list[discord.File]:
     """ Собираем файлы для отправки в ЛС. """
     print('Начинаем билдить...')
     attcs_as_files = list()
-    with attcs_as_files:
-        for attc in message.attachments:
-            print(attc)
-            try:
-                with discord.File(
-                    MEDIA_PATH + attc.filename,
-                    filename=attc.filename,
-                ) as file:
-                    attcs_as_files.append(file)
-            except Exception as e:
-                print(e)
+    for attc in message.attachments:
+        print(attc)
+        try:
+            with discord.File(
+                MEDIA_PATH + attc.filename,
+                filename=attc.filename,
+            ) as file:
+                attcs_as_files.append(file)
+        except Exception as e:
+            print(e)
     return attcs_as_files
 
 
