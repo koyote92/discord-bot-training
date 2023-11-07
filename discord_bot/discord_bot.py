@@ -42,7 +42,7 @@ async def download_attachments(message):
     for attachment in message.attachments:
         print(f'Скачиваем {attachment.filename} ...')
         await attachment.save(attachment.filename)
-        print(f'{attachment.file} скачан.'
+        print(f'{attachment.file} скачан.')
         await asyncio.sleep(3)
 
 
@@ -70,7 +70,7 @@ async def on_message(message):
         message_text = build_message(message)
 
         if message.attachments:
-            print('К сообщению прикреплены вложения.')
+            print('К сообщению прикреплены вложения. Скачиваем...')
             await download_attachments(message)
             attcs = build_attachments(message)
 
