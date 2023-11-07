@@ -106,7 +106,7 @@ async def on_message(message: discord.Message, attcs=None) -> None:
         member_roles_ids = [role.id for role in member.roles]
         if ROLE_ID in member_roles_ids:
             print(f'{ROLE_ID}: {member_roles_ids}')
-            await asyncio.sleep(3)
+            await asyncio.sleep(60)
             try:
                 await member.send(message_text)
                 # await (
