@@ -85,7 +85,7 @@ async def on_message(message):
                 await (member.send(message_text, files=attcs) if attcs
                        else member.send(message_text))
 
-    remove_files(message)
+    # remove_files(message)
 
 
 async def run():
