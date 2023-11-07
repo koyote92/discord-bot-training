@@ -64,18 +64,8 @@ async def download_attachments(message: discord.Message) -> None:
 
 def build_attachments(message: discord.Message) -> list[discord.File]:
     """ Собираем файлы для отправки в ЛС. """
-    print('Начинаем билдить...')
-    attcs_as_files = list()
-    for attc in message.attachments:
-        print(attc)
-        try:
-            with discord.File(
-                MEDIA_PATH + attc.filename,
-                filename=attc.filename,
-            ) as file:
-                attcs_as_files.append(file)
-        except Exception as e:
-            print(e)
+    attcs_as_files = [discord.File(fp=MEDIA_PATH + attc.filename, filename=attc.filename)
+                      for attc in message.attachments]
     return attcs_as_files
 
 
