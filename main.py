@@ -10,22 +10,22 @@ from discord_bot import discord_bot
 load_dotenv()
 
 
-DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
-DISCORD_SERVER_ID = os.getenv('DISCORD_SERVER_ID')
 DISCORD_ANNOUNCEMENTS_CHANNEL_ID = os.getenv(
     'DISCORD_ANNOUNCEMENTS_CHANNEL_ID'
 )
-DISCORD_NF_ROLE_ID = os.getenv('DISCORD_NF_ROLE_ID')
+DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+DISCORD_ROLE_ID = os.getenv('DISCORD_ROLE_ID')
+DISCORD_SERVER_ID = os.getenv('DISCORD_SERVER_ID')
 MEDIA_PATH = str(os.getenv('MEDIA_PATH'))
 
 
-def check_dotenv_variables():
+def check_dotenv_variables() -> None:
     """ Проверяет наличие необходимых переменных окружения. """
     dotenv_variables_names = [
         'DISCORD_BOT_TOKEN',
         'DISCORD_SERVER_ID',
         'DISCORD_ANNOUNCEMENTS_CHANNEL_ID',
-        'DISCORD_NF_ROLE_ID',
+        'DISCORD_ROLE_ID',
         'MEDIA_PATH',
     ]
     missing_vars = [name for name in dotenv_variables_names
