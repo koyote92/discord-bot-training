@@ -1,5 +1,6 @@
 import asyncio
 import os
+from sys import exit
 
 import discord
 from dotenv import load_dotenv
@@ -19,10 +20,21 @@ intents = discord.Intents.all()
 bot = discord.Client(intents=intents)
 
 
-@bot.event
-async def on_ready() -> None:
-    """ Сообщает о рабочей готовности дискорд-бота. """
-    print(f'{bot.user} на боевом дежурстве в Discord!')
+def check_dotenv_variables() -> None:
+    """ Проверяет наличие необходимых переменных окружения. """
+    dotenv_variables_names = [
+        'ANNO_CHA',
+        'BOT_TOKEN',
+        'MEDIA_PATH',
+        'ROLE_ID',
+        'SERVER_ID',
+    ]
+    missing_vars = [name for name in dotenv_variables_names
+                    if not globals()[name]]
+    if missing_vars:
+        exit(f'Отсутствуют необходимые переменные: {missing_vars}')
+
+    print('Переменные окружения настроены. Запускаем бота...')
 
 
 def build_message(message: discord.Message) -> str:
@@ -64,27 +76,36 @@ def remove_files(message: discord.Message) -> None:
 
 
 @bot.event
-async def on_message(message: discord.Message,
-                     attcs: None | list[discord.File] = None) -> None:
-    """ Реакция на событие - новое сообщение в дискорде. """
-    if message.channel.id == ANNO_CHA:
-        message_text = build_message(message)
+async def on_ready() -> None:
+    """ Сообщает о рабочей готовности дискорд-бота. """
+    print(f'{bot.user} на боевом дежурстве в Discord!')
 
-        if message.attachments:
-            await download_attachments(message)
-            attcs = build_attachments(message)
 
-        guild = bot.get_guild(SERVER_ID)
-        for member in guild.members:
-            member_roles_ids = [role.id for role in member.roles]
-            if ROLE_ID in member_roles_ids:
-                await asyncio.sleep(3)
-                await (member.send(message_text, files=attcs) if attcs
-                       else member.send(message_text))
+@bot.event
+async def on_message(message: discord.Message, attcs=None) -> None:
 
+    if message.channel.id != ANNO_CHA:
+        return
+
+    message_text = build_message(message)
+
+    if message.attachments:
+        await download_attachments(message)
+        attcs = build_attachments(message)
+
+    guild = bot.get_guild(SERVER_ID)
+    for member in guild.members:
+        member_roles_ids = [role.id for role in member.roles]
+        if ROLE_ID in member_roles_ids:
+            await asyncio.sleep(3)
+            await (
+                member.send(message_text, files=attcs) if attcs
+                else member.send(message_text)
+            )
     remove_files(message)
 
 
 async def run() -> None:
     """ Запускает дискорд-бота. """
+    check_dotenv_variables()
     await bot.start(BOT_TOKEN)
