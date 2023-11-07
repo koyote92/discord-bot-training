@@ -89,15 +89,17 @@ async def on_message(message: discord.Message, attcs=None) -> None:
 
     if message.channel.id != ANNO_CHA:
         return
+    if message.attachments:
+        return
 
     print(f'Новое сообщение в #{message.channel.name} '
           f'от {message.author.name}')
     message_text = build_message(message)
 
-    if message.attachments:
-        print(f'Сообщение содержит вложения: {len(message.attachments)}')
-        await download_attachments(message)
-        attcs = build_attachments(message)
+    # if message.attachments:
+        # print(f'Сообщение содержит вложения: {len(message.attachments)}')
+        # await download_attachments(message)
+        # attcs = build_attachments(message)
 
     guild = bot.get_guild(SERVER_ID)
     for member in guild.members:
@@ -106,14 +108,15 @@ async def on_message(message: discord.Message, attcs=None) -> None:
             print(f'{ROLE_ID}: {member_roles_ids}')
             await asyncio.sleep(3)
             try:
-                await (
-                    member.send(message_text, files=attcs) if attcs
-                    else member.send(message_text)
-                )
+                await member.send(message_text)
+                # await (
+                #     member.send(message_text, files=attcs) if attcs
+                #     else member.send(message_text)
+                # )
             except Exception as e:
                 print(e)
             print(f'Сообщение отправлено для {member.name}')
-    remove_files(message)
+    # remove_files(message)
 
 
 async def run() -> None:
