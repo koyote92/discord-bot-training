@@ -58,6 +58,7 @@ async def download_attachments(message: discord.Message) -> None:
     """Скачиваем прикреплённые файлы из сообщения. """
     for attachment in message.attachments:
         await attachment.save(attachment.filename)
+        print(f'Файл {attachment.filename} загружен.')
         await asyncio.sleep(3)
 
 
@@ -66,13 +67,15 @@ def build_attachments(message: discord.Message) -> list[discord.File]:
     attcs_as_files = [
         discord.File(MEDIA_PATH + attc.filename, filename=attc.filename) for
         attc in message.attachments]
+    print('Вложения прикреплены к текстовому сообщению.')
     return attcs_as_files
 
 
 def remove_files(message: discord.Message) -> None:
     """ Удаляем загруженные медиа-файлы. """
-    for attc in message.attachments:
-        os.unlink(MEDIA_PATH + attc.filename)
+    for attachment in message.attachments:
+        os.unlink(MEDIA_PATH + attachment.filename)
+        print(f'Файл {attachment.filename} удалён.')
 
 
 @bot.event
@@ -87,9 +90,11 @@ async def on_message(message: discord.Message, attcs=None) -> None:
     if message.channel.id != ANNO_CHA:
         return
 
+    print(f'Новое сообщение в {message.channel.name} от {message.author.name}')
     message_text = build_message(message)
 
     if message.attachments:
+        print(f'Сообщение содержит вложения: {len(message.attachments)}')
         await download_attachments(message)
         attcs = build_attachments(message)
 
@@ -102,6 +107,7 @@ async def on_message(message: discord.Message, attcs=None) -> None:
                 member.send(message_text, files=attcs) if attcs
                 else member.send(message_text)
             )
+            print(f'Сообщение отправлено для {member.name}')
     remove_files(message)
 
 
