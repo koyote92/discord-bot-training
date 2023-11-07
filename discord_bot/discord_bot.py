@@ -41,7 +41,10 @@ def build_message(message):
 async def download_attachments(message):
     for attachment in message.attachments:
         print(f'Скачиваем {attachment.filename} ...')
-        await attachment.save(attachment.filename)
+        try:
+            await attachment.save(attachment.filename)
+        except Exception as e:
+            print(e)
         print(f'{attachment.file} скачан.')
         await asyncio.sleep(3)
 
