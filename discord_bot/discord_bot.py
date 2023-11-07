@@ -98,20 +98,19 @@ async def on_message(message: discord.Message, attcs=None) -> None:
         attcs = build_attachments(message)
 
     guild = bot.get_guild(SERVER_ID)
-    with attcs:
-        for member in guild.members:
-            member_roles_ids = [role.id for role in member.roles]
-            if ROLE_ID in member_roles_ids:
-                print(f'{ROLE_ID}: {member_roles_ids}')
-                await asyncio.sleep(3)
-                try:
-                    await (
-                        member.send(message_text, files=attcs) if attcs
-                        else member.send(message_text)
-                    )
-                except Exception as e:
-                    print(e)
-                print(f'Сообщение отправлено для {member.name}')
+    for member in guild.members:
+        member_roles_ids = [role.id for role in member.roles]
+        if ROLE_ID in member_roles_ids:
+            print(f'{ROLE_ID}: {member_roles_ids}')
+            await asyncio.sleep(3)
+            try:
+                await (
+                    member.send(message_text, files=attcs) if attcs
+                    else member.send(message_text)
+                )
+            except Exception as e:
+                print(e)
+            print(f'Сообщение отправлено для {member.name}')
     remove_files(message)
 
 
