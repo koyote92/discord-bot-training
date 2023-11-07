@@ -106,10 +106,13 @@ async def on_message(message: discord.Message, attcs=None) -> None:
         if ROLE_ID in member_roles_ids:
             print(f'{ROLE_ID}: {member_roles_ids}')
             await asyncio.sleep(3)
-            await (
-                member.send(message_text, files=attcs) if attcs
-                else member.send(message_text)
-            )
+            try:
+                await (
+                    member.send(message_text, files=attcs) if attcs
+                    else member.send(message_text)
+                )
+            except Except as e:
+                print(e)
             print(f'Сообщение отправлено для {member.name}')
     remove_files(message)
 
